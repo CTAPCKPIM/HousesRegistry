@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.0;
+pragma solidity ^0.8.1;
+
 
 ///@author by CTAPCKPIM
 ///@title Registry of houses
-
-import "./token/HouseNFT.sol";
+import './token/HouseNFT.sol';
 
 interface TokenIntarface{
     function transferFrom(address _from, address _to, uint256 _value) external returns (bool success); 
@@ -33,7 +33,7 @@ contract HouseRegistry {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "ERROR: You no the owner");
+        require(msg.sender == owner, 'You no the owner');
         _;
     }
 
@@ -54,10 +54,10 @@ contract HouseRegistry {
         address _seller, 
         string memory _addressHouse
     ) internal returns(uint256) {
-        require(_costETH > 0, "ERROR: Price not can bee '0'");
-        require(_squareHouse > 0, "ERROR: Square can not be '0'");
+        require(_costETH > 0, 'Price not can bee "0"');
+        require(_squareHouse > 0, 'Square can not be "0"');
         uint256 randId = uint256(keccak256(abi.encodePacked(_seller, _squareHouse, _addressHouse))) % idNumber;
-        require(addressHouseToken[randId] == address(0), "ERROR: This ID already exists");
+        require(addressHouseToken[randId] == address(0), 'This ID already exists');
         HouseNFT houseNFT = new HouseNFT(randId, _costETH, _costDAI, _squareHouse, _seller, _addressHouse);
         addressHouseToken[randId] = address(houseNFT);
         houseIndex.push(randId);
@@ -77,13 +77,13 @@ contract HouseRegistry {
 
     ///dev return the prise of house in ETH
     function costHouseETH(uint256 _idHouse) public view returns(uint256) {
-        require(addressHouseToken[_idHouse] != address(0), "ERROR: This house doesn't exists");
+        require(addressHouseToken[_idHouse] != address(0), 'This house does not exists');
         return HouseNFT(addressHouseToken[_idHouse]).getCostETH();
     }
 
     ///dev return the prise of house in DAI
     function costHouseDAI(uint256 _idHouse) public view returns(uint256) {
-        require(addressHouseToken[_idHouse] != address(0), "ERROR: This house doesn't exists");
+        require(addressHouseToken[_idHouse] != address(0), 'This house does not exists');
         return HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
     }
 
