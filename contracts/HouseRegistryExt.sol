@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.0;
+pragma solidity ^0.8.1;
 
-import "./HouseRegistry.sol";
+import './HouseRegistry.sol';
+
 
 ///@author by CTAPCKPIM
 ///@title Simple registry of houses
-
 contract HouseRegistryExt is HouseRegistry {
 
     ///@dev the setting value of time
@@ -30,14 +30,14 @@ contract HouseRegistryExt is HouseRegistry {
         string memory _addressHouse
     ) public {
         address _seller = msg.sender;
-        require(_timeCheck(), "ERROR: Adding a house will be available in 24 hours");
+        require(_timeCheck(), 'After 24 hours');
         _listHouse(_costETH, _costDAI, _squareHouse, _seller, _addressHouse);
         _timeSum();
     }
     
     ///@dev this function accepts ETH to buy a NFT house, and transferred ETH to the seller
     function buyNFTHouseWithETH(uint256 _idHouse) public payable {
-        require(addressHouseToken[_idHouse] != address(0), "ERROR: This house doesn't exists");
+        require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
         address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
         uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostETH();
         payable(_seller).transfer(_value);
@@ -50,7 +50,7 @@ contract HouseRegistryExt is HouseRegistry {
     ///@dev this function accepts DAI to buy a house, and transferred DAI to the seller
     ///@dev using an interface for token 'FakeDAI'
     function buyHouseWithDAI(uint256 _idHouse) public payable {
-        require(addressHouseToken[_idHouse] != address(0), "ERROR: This house doesn't exists");
+        require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
         address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
         uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
         TokenIntarface(tokenAddr).transferFrom(msg.sender, _seller, _value);

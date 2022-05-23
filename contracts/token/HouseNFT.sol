@@ -1,10 +1,9 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.0;
+pragma solidity ^0.8.1;
 
-import "./ERC721.sol";
-import "./IHouseNFT.sol";
-
+import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
+import './IHouseNFT.sol';
 
 ///@author by CTAPCKPIM
 ///@title token-contract 'House NFT'
@@ -12,15 +11,15 @@ import "./IHouseNFT.sol";
 ///@dev inherit from ERC721 smart contract
 contract HouseNFT is IHouseNFT, ERC721{
     ///@dev information about House-token
-    uint256 idHouse; 
-    uint256  costETH;
-    uint256  costDAI;
-    uint256  squareHouse;
-    address  seller;
-    address  buyer;
-    address  addressContract; 
-    string  addressHouse;
-    bool  exist;
+    uint256 internal idHouse; 
+    uint256 internal costETH;
+    uint256 internal costDAI;
+    uint256 internal squareHouse;
+    address internal seller;
+    address internal buyer;
+    address internal addressContract; 
+    string internal addressHouse;
+    bool internal exist;
 
     constructor(uint256 randId, 
         uint256 _costETH, 
@@ -28,7 +27,7 @@ contract HouseNFT is IHouseNFT, ERC721{
         uint256 _squareHouse, 
         address _seller, 
         string memory _addressHouse
-    ) ERC721("HouseToken", "HT") {
+    ) ERC721('HouseToken', 'HT') {
         idHouse = randId;
         costETH = _costETH;
         costDAI = _costDAI;
