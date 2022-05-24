@@ -4,7 +4,7 @@ pragma solidity ^0.8.1;
 
 import './HouseRegistry.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-
+import './token/IHouseNFT.sol';
 
 ///@author by CTAPCKPIM
 ///@title Simple registry of houses
@@ -30,20 +30,23 @@ contract HouseRegistryExt is HouseRegistry {
         uint256 _squareHouse, 
         string memory _addressHouse
     ) public {
-        address _seller = msg.sender;
+        //address _seller = msg.sender;
         require(_timeCheck(), 'After 24 hours');
-        _listHouse(_costETH, _costDAI, _squareHouse, _seller, _addressHouse);
+        _listHouse(_costETH, _costDAI, _squareHouse, msg.sender, _addressHouse);
         _timeSum();
     }
     
     ///@dev this function accepts ETH to buy a NFT house, and transferred ETH to the seller
     function buyNFTHouseWithETH(uint256 _idHouse) public payable {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
-        address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
-        uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostETH();
-        payable(_seller).transfer(_value);
-        IHouseNFT(addressHouseToken[_idHouse]).transferFrom(_seller, msg.sender, _idHouse);
-        HouseNFT(addressHouseToken[_idHouse]).setSeller(msg.sender);
+        //address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
+        //uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostETH();
+        payable(HouseNFT(addressHouseToken[_idHouse]).getSeller()).transfer(
+            HouseNFT(addressHouseToken[_idHouse]).getCostETH());
+        IHouseNFT(addressHouseToken[_idHouse]).transferFrom(
+            HouseNFT(addressHouseToken[_idHouse]).getSeller(), 
+            msg.sender, 
+            _idHouse);
         HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 
@@ -52,10 +55,12 @@ contract HouseRegistryExt is HouseRegistry {
     ///@dev using an interface for token 'FakeDAI'
     function buyHouseWithDAI(uint256 _idHouse) public payable {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
-        address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
-        uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
-        IERC20(tokenAddr).transferFrom(msg.sender, _seller, _value);
-        HouseNFT(addressHouseToken[_idHouse]).setSeller(msg.sender);
+        //address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
+        //uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
+        IERC20(tokenAddr).transferFrom(
+            msg.sender, 
+            HouseNFT(addressHouseToken[_idHouse]).getSeller(),
+            HouseNFT(addressHouseToken[_idHouse]).getCostDAI());
         HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 }

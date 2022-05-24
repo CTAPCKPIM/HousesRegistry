@@ -17,7 +17,6 @@ contract HouseNFT is IHouseNFT, ERC721{
     uint256 internal squareHouse;
     address internal seller;
     address internal buyer;
-    address internal addressContract; 
     string internal addressHouse;
     bool internal exist;
 
@@ -34,7 +33,6 @@ contract HouseNFT is IHouseNFT, ERC721{
         squareHouse = _squareHouse;
         seller = _seller;
         buyer = address(0);
-        addressContract = address(this);
         addressHouse = _addressHouse;
         exist = true;
 
