@@ -7,10 +7,6 @@ pragma solidity ^0.8.1;
 ///@title Registry of houses
 import './token/HouseNFT.sol';
 
-interface TokenIntarface{
-    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success); 
-}
-
 contract HouseRegistry {
 
     ///@dev to display in an outer functions
@@ -54,16 +50,24 @@ contract HouseRegistry {
         address _seller, 
         string memory _addressHouse
     ) internal returns(uint256) {
-        require(_costETH > 0, 'Price not can bee "0"');
-        require(_squareHouse > 0, 'Square can not be "0"');
-        uint256 randId = uint256(keccak256(abi.encodePacked(_seller, _squareHouse, _addressHouse))) % idNumber;
+        require(_costETH > 0 || _squareHouse > 0, 'Price, square not can bee "0"');
+        uint256 randId = _genIdHouse(_squareHouse, _seller, _addressHouse);
         require(addressHouseToken[randId] == address(0), 'This ID already exists');
         HouseNFT houseNFT = new HouseNFT(randId, _costETH, _costDAI, _squareHouse, _seller, _addressHouse);
         addressHouseToken[randId] = address(houseNFT);
         houseIndex.push(randId);
         emit NewHouse(randId, _seller, _costETH, _costDAI, _addressHouse);
         return randId;
-    } 
+    }
+
+    ///@dev generation the ID for house 
+    function _genIdHouse(uint256 _squareHouse, 
+        address _seller, 
+        string memory _addressHouse
+    ) internal view returns(uint256){
+        uint256 randId = uint256(keccak256(abi.encodePacked(_squareHouse, _seller, _addressHouse))) % idNumber;
+        return randId;
+    }
     
     ///@dev setting not activity house in register
     function delistHouse(uint256 _idHouse) public onlyOwner {

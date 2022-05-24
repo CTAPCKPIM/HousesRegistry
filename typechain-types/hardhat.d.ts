@@ -49,17 +49,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "Greeter",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Greeter__factory>;
-    getContractFactory(
       name: "HouseRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.HouseRegistry__factory>;
-    getContractFactory(
-      name: "TokenIntarface",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.TokenIntarface__factory>;
     getContractFactory(
       name: "HouseRegistryExt",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -123,20 +115,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "Greeter",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Greeter>;
-    getContractAt(
       name: "HouseRegistry",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.HouseRegistry>;
-    getContractAt(
-      name: "TokenIntarface",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.TokenIntarface>;
     getContractAt(
       name: "HouseRegistryExt",
       address: string,

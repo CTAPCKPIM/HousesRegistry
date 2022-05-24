@@ -24,12 +24,8 @@ export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC16
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
-export type { Greeter } from "./contracts/Greeter";
-export { Greeter__factory } from "./factories/contracts/Greeter__factory";
-export type { HouseRegistry } from "./contracts/HouseRegistry.sol/HouseRegistry";
-export { HouseRegistry__factory } from "./factories/contracts/HouseRegistry.sol/HouseRegistry__factory";
-export type { TokenIntarface } from "./contracts/HouseRegistry.sol/TokenIntarface";
-export { TokenIntarface__factory } from "./factories/contracts/HouseRegistry.sol/TokenIntarface__factory";
+export type { HouseRegistry } from "./contracts/HouseRegistry";
+export { HouseRegistry__factory } from "./factories/contracts/HouseRegistry__factory";
 export type { HouseRegistryExt } from "./contracts/HouseRegistryExt";
 export { HouseRegistryExt__factory } from "./factories/contracts/HouseRegistryExt__factory";
 export type { HouseNFT } from "./contracts/token/HouseNFT";

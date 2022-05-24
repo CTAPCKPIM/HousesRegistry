@@ -3,6 +3,7 @@
 pragma solidity ^0.8.1;
 
 import './HouseRegistry.sol';
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 
 ///@author by CTAPCKPIM
@@ -53,7 +54,7 @@ contract HouseRegistryExt is HouseRegistry {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
         address _seller = HouseNFT(addressHouseToken[_idHouse]).getSeller();
         uint256 _value = HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
-        TokenIntarface(tokenAddr).transferFrom(msg.sender, _seller, _value);
+        IERC20(tokenAddr).transferFrom(msg.sender, _seller, _value);
         HouseNFT(addressHouseToken[_idHouse]).setSeller(msg.sender);
         HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
