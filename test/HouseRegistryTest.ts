@@ -4,7 +4,7 @@ import { ethers } from 'hardhat';
 describe('House Registry', () => {
   let houseRegistry: any;
   let accountOne: any;
-  let accountTwo: any; 
+  let accountTwo: any;
   let accountThree: any;
 
   beforeEach(async () => {
@@ -17,7 +17,4 @@ describe('House Registry', () => {
   it('Should be deployed', async () => {
     expect(houseRegistry.address).to.be.properAddress;
   });
-
 });
-
-
