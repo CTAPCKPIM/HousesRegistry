@@ -9,23 +9,23 @@ import './IHouseNFT.sol';
 ///@title token-contract 'House NFT'
 
 ///@dev inherit from ERC721 smart contract
-contract HouseNFT is IHouseNFT, ERC721{
+contract HouseNFT is IHouseNFT, ERC721 {
     ///@dev information about House-token
-    uint256 internal idHouse; 
+    uint256 internal idHouse;
     uint256 internal costETH;
     uint256 internal costDAI;
     uint256 internal squareHouse;
     address internal seller;
     address internal buyer;
-    address internal addressContract; 
     string internal addressHouse;
     bool internal exist;
 
-    constructor(uint256 randId, 
-        uint256 _costETH, 
-        uint256 _costDAI, 
-        uint256 _squareHouse, 
-        address _seller, 
+    constructor(
+        uint256 randId,
+        uint256 _costETH,
+        uint256 _costDAI,
+        uint256 _squareHouse,
+        address _seller,
         string memory _addressHouse
     ) ERC721('HouseToken', 'HT') {
         idHouse = randId;
@@ -34,29 +34,27 @@ contract HouseNFT is IHouseNFT, ERC721{
         squareHouse = _squareHouse;
         seller = _seller;
         buyer = address(0);
-        addressContract = address(this);
         addressHouse = _addressHouse;
         exist = true;
-
     }
 
     ///@dev getting the ID of house
-    function getId() external override view returns(uint256) {
+    function getId() external view override returns (uint256) {
         return idHouse;
     }
 
-    ///@dev get the price in ETH 
-    function getCostETH() external override view returns(uint256) {
+    ///@dev get the price in ETH
+    function getCostETH() external view override returns (uint256) {
         return costETH;
     }
 
     ///@dev get the price in DAI
-    function getCostDAI() external override view returns(uint256) {
+    function getCostDAI() external view override returns (uint256) {
         return costDAI;
     }
 
     ///@dev get the address of seller
-    function getSeller() external override view returns(address) {
+    function getSeller() external view override returns (address) {
         return seller;
     }
 
@@ -74,7 +72,4 @@ contract HouseNFT is IHouseNFT, ERC721{
     function setBool() external override {
         exist = false;
     }
-    
-      
-
 }
