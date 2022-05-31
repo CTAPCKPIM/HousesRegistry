@@ -9,13 +9,15 @@ import './token/HouseNFT.sol';
 contract HouseRegistry {
     ///@dev to display in an outer functions
     event NewHouse(uint256 id, address seller, uint256 costETH, uint256 costDAI, string addrHouse);
+    ///@dev to display in an outer functions
+    event NewTokenAddress(address addr);
+    ///@dev to display in an outer functions
+    event DelistHouse(string message);
 
     ///@dev the variable for helping the generation ID
     uint256 internal idNumber = 99999;
     ///@dev the setting time of pause
-    uint256 internal readiness = 1 seconds; //1 days;
-    ///@dev the variable for setting of time
-    uint256 internal timer;
+    uint256 internal readiness = 1 days;
     ///@dev setting the address of token contract
     address internal tokenAddr;
     ///@dev the address of owner
@@ -38,17 +40,20 @@ contract HouseRegistry {
     ///@dev all address of token-contracts
     mapping(uint256 => address) public addressHouseToken;
 
+    ///@dev mapping to save time of recharge
+    mapping(address => uint256) internal timerRecharge;
+
     ///@param 'randId' creates a new ID for the house
     ///@dev function for create new NFT house (token-contract)
     ///@dev return to the external interface 'ID' 'seller' 'price' 'addr house(street)'
     ///@dev return ID
-    function _listHouse(
+    function listHouse(
         uint256 _costETH,
         uint256 _costDAI,
         uint256 _squareHouse,
         address _seller,
         string memory _addressHouse
-    ) internal returns (uint256) {
+    ) public returns (uint256) {
         require(_costETH > 0 || _squareHouse > 0, 'Price, square not can bee "0"');
         uint256 randId = _genIdHouse(_squareHouse, _seller, _addressHouse);
         require(addressHouseToken[randId] == address(0), 'This ID already exists');
@@ -79,25 +84,17 @@ contract HouseRegistry {
     }
 
     ///@dev setting not activity house in register
-    function delistHouse(uint256 _idHouse) public onlyOwner {
+    function delistHouse(uint256 _idHouse) public onlyOwner returns(string memory) {
         HouseNFT(addressHouseToken[_idHouse]).setBool();
+        string memory message = 'Successfully';
+        emit DelistHouse(message);
+        return message;
     }
 
     ///@dev setting the address of token
     function setAddrToken(address _tokenAddr) public onlyOwner {
         tokenAddr = _tokenAddr;
-    }
-
-    ///dev return the prise of house in ETH
-    function costHouseETH(uint256 _idHouse) public view returns (uint256) {
-        require(addressHouseToken[_idHouse] != address(0), 'This house does not exists');
-        return HouseNFT(addressHouseToken[_idHouse]).getCostETH();
-    }
-
-    ///dev return the prise of house in DAI
-    function costHouseDAI(uint256 _idHouse) public view returns (uint256) {
-        require(addressHouseToken[_idHouse] != address(0), 'This house does not exists');
-        return HouseNFT(addressHouseToken[_idHouse]).getCostDAI();
+        emit NewTokenAddress(tokenAddr);
     }
 
     /*

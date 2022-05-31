@@ -12,24 +12,32 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
-import type { FunctionFragment, Result } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from '../../../../common';
+} from "ethers";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+} from "../../../../common";
 
 export interface IERC721ReceiverInterface extends utils.Interface {
   functions: {
-    'onERC721Received(address,address,uint256,bytes)': FunctionFragment;
+    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
   };
 
-  getFunction(nameOrSignatureOrTopic: 'onERC721Received'): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "onERC721Received"): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: 'onERC721Received',
+    functionFragment: "onERC721Received",
     values: [string, string, BigNumberish, BytesLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: 'onERC721Received', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC721Received",
+    data: BytesLike
+  ): Result;
 
   events: {};
 }
@@ -51,7 +59,9 @@ export interface IERC721Receiver extends BaseContract {
     eventFilter?: TypedEventFilter<TEvent>
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;

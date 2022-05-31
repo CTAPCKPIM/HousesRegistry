@@ -12,47 +12,84 @@ import type {
   PopulatedTransaction,
   Signer,
   utils,
-} from 'ethers';
-import type { FunctionFragment, Result, EventFragment } from '@ethersproject/abi';
-import type { Listener, Provider } from '@ethersproject/providers';
-import type { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from '../common';
+} from "ethers";
+import type {
+  FunctionFragment,
+  Result,
+  EventFragment,
+} from "@ethersproject/abi";
+import type { Listener, Provider } from "@ethersproject/providers";
+import type {
+  TypedEventFilter,
+  TypedEvent,
+  TypedListener,
+  OnEvent,
+} from "../common";
 
 export interface HouseRegistryInterface extends utils.Interface {
   functions: {
-    'addressHouseToken(uint256)': FunctionFragment;
-    'costHouseDAI(uint256)': FunctionFragment;
-    'costHouseETH(uint256)': FunctionFragment;
-    'delistHouse(uint256)': FunctionFragment;
-    'setAddrToken(address)': FunctionFragment;
+    "addressHouseToken(uint256)": FunctionFragment;
+    "delistHouse(uint256)": FunctionFragment;
+    "listHouse(uint256,uint256,uint256,address,string)": FunctionFragment;
+    "setAddrToken(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | 'addressHouseToken'
-      | 'costHouseDAI'
-      | 'costHouseETH'
-      | 'delistHouse'
-      | 'setAddrToken'
+      | "addressHouseToken"
+      | "delistHouse"
+      | "listHouse"
+      | "setAddrToken"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: 'addressHouseToken', values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'costHouseDAI', values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'costHouseETH', values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'delistHouse', values: [BigNumberish]): string;
-  encodeFunctionData(functionFragment: 'setAddrToken', values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "addressHouseToken",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "delistHouse",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listHouse",
+    values: [BigNumberish, BigNumberish, BigNumberish, string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setAddrToken",
+    values: [string]
+  ): string;
 
-  decodeFunctionResult(functionFragment: 'addressHouseToken', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'costHouseDAI', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'costHouseETH', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'delistHouse', data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: 'setAddrToken', data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addressHouseToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "delistHouse",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "listHouse", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setAddrToken",
+    data: BytesLike
+  ): Result;
 
   events: {
-    'NewHouse(uint256,address,uint256,uint256,string)': EventFragment;
+    "DelistHouse(string)": EventFragment;
+    "NewHouse(uint256,address,uint256,uint256,string)": EventFragment;
+    "NewTokenAddress(address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: 'NewHouse'): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DelistHouse"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewHouse"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewTokenAddress"): EventFragment;
 }
+
+export interface DelistHouseEventObject {
+  message: string;
+}
+export type DelistHouseEvent = TypedEvent<[string], DelistHouseEventObject>;
+
+export type DelistHouseEventFilter = TypedEventFilter<DelistHouseEvent>;
 
 export interface NewHouseEventObject {
   id: BigNumber;
@@ -67,6 +104,16 @@ export type NewHouseEvent = TypedEvent<
 >;
 
 export type NewHouseEventFilter = TypedEventFilter<NewHouseEvent>;
+
+export interface NewTokenAddressEventObject {
+  addr: string;
+}
+export type NewTokenAddressEvent = TypedEvent<
+  [string],
+  NewTokenAddressEventObject
+>;
+
+export type NewTokenAddressEventFilter = TypedEventFilter<NewTokenAddressEvent>;
 
 export interface HouseRegistry extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -85,7 +132,9 @@ export interface HouseRegistry extends BaseContract {
     eventFilter?: TypedEventFilter<TEvent>
   ): Array<TypedListener<TEvent>>;
   listeners(eventName?: string): Array<Listener>;
-  removeAllListeners<TEvent extends TypedEvent>(eventFilter: TypedEventFilter<TEvent>): this;
+  removeAllListeners<TEvent extends TypedEvent>(
+    eventFilter: TypedEventFilter<TEvent>
+  ): this;
   removeAllListeners(eventName?: string): this;
   off: OnEvent<this>;
   on: OnEvent<this>;
@@ -93,14 +142,22 @@ export interface HouseRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    addressHouseToken(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
-
-    costHouseDAI(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    costHouseETH(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<[BigNumber]>;
+    addressHouseToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     delistHouse(
       _idHouse: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    listHouse(
+      _costETH: BigNumberish,
+      _costDAI: BigNumberish,
+      _squareHouse: BigNumberish,
+      _seller: string,
+      _addressHouse: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -110,14 +167,22 @@ export interface HouseRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  addressHouseToken(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  costHouseDAI(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-  costHouseETH(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+  addressHouseToken(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   delistHouse(
     _idHouse: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  listHouse(
+    _costETH: BigNumberish,
+    _costDAI: BigNumberish,
+    _squareHouse: BigNumberish,
+    _seller: string,
+    _addressHouse: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -127,19 +192,33 @@ export interface HouseRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addressHouseToken(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+    addressHouseToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    costHouseDAI(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    delistHouse(
+      _idHouse: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
-    costHouseETH(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    delistHouse(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    listHouse(
+      _costETH: BigNumberish,
+      _costDAI: BigNumberish,
+      _squareHouse: BigNumberish,
+      _seller: string,
+      _addressHouse: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     setAddrToken(_tokenAddr: string, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    'NewHouse(uint256,address,uint256,uint256,string)'(
+    "DelistHouse(string)"(message?: null): DelistHouseEventFilter;
+    DelistHouse(message?: null): DelistHouseEventFilter;
+
+    "NewHouse(uint256,address,uint256,uint256,string)"(
       id?: null,
       seller?: null,
       costETH?: null,
@@ -153,17 +232,28 @@ export interface HouseRegistry extends BaseContract {
       costDAI?: null,
       addrHouse?: null
     ): NewHouseEventFilter;
+
+    "NewTokenAddress(address)"(addr?: null): NewTokenAddressEventFilter;
+    NewTokenAddress(addr?: null): NewTokenAddressEventFilter;
   };
 
   estimateGas: {
-    addressHouseToken(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    costHouseDAI(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
-
-    costHouseETH(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+    addressHouseToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     delistHouse(
       _idHouse: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    listHouse(
+      _costETH: BigNumberish,
+      _costDAI: BigNumberish,
+      _squareHouse: BigNumberish,
+      _seller: string,
+      _addressHouse: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -174,14 +264,22 @@ export interface HouseRegistry extends BaseContract {
   };
 
   populateTransaction: {
-    addressHouseToken(arg0: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    costHouseDAI(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    costHouseETH(_idHouse: BigNumberish, overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    addressHouseToken(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     delistHouse(
       _idHouse: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    listHouse(
+      _costETH: BigNumberish,
+      _costDAI: BigNumberish,
+      _squareHouse: BigNumberish,
+      _seller: string,
+      _addressHouse: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
