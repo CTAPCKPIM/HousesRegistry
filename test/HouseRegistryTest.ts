@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ethers } from 'hardhat';
+import { ethers, upgrades } from 'hardhat';
 
 describe('House Registry:', () => {
   let houseRegistry: any;
@@ -11,8 +11,9 @@ describe('House Registry:', () => {
   beforeEach(async () => {
     [accountOne, accountTwo, accountThree] = await ethers.getSigners();
     const HouseRegistry = await ethers.getContractFactory('HouseRegistry', accountOne);
-    houseRegistry = await HouseRegistry.deploy();
+    houseRegistry = await upgrades.deployProxy(HouseRegistry);
     await houseRegistry.deployed();
+    //await houseRegistry.initialize();
     //creating ready a house
     const funct = await houseRegistry.listHouse(122,122,122, accountTwo.address, '122');
     const data = await funct.wait();

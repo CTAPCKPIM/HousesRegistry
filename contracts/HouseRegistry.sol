@@ -5,8 +5,9 @@ pragma solidity ^0.8.1;
 ///@author by CTAPCKPIM
 ///@title Registry of houses
 import './token/HouseNFT.sol';
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract HouseRegistry {
+contract HouseRegistry is Initializable {
     ///@dev to display in an outer functions
     event NewHouse(uint256 id, address seller, uint256 costETH, uint256 costDAI, string addrHouse);
     ///@dev to display in an outer functions
@@ -15,26 +16,29 @@ contract HouseRegistry {
     event DelistHouse(string message);
 
     ///@dev the variable for helping the generation ID
-    uint256 internal idNumber = 99999;
+    uint256 internal idNumber;
     ///@dev the setting time of pause
-    uint256 internal readiness = 1 days;
+    uint256 internal readiness;
     ///@dev setting the address of token contract
     address internal tokenAddr;
     ///@dev the address of owner
     address internal owner;
 
     ///@dev setting the owner
-    constructor() {
+    function initialize() public initializer {
         owner = msg.sender;
-    }
+        idNumber = 99999;
+        readiness = 1 days;
 
+    }
+    
     modifier onlyOwner() {
         require(msg.sender == owner, 'You no the owner');
         _;
     }
 
     ///@dev array of ID
-    uint256[] private houseIndex;
+    uint256[] public houseIndex;
 
     ///@dev mapping to save all address new token-contracts
     ///@dev all address of token-contracts
@@ -96,9 +100,4 @@ contract HouseRegistry {
         tokenAddr = _tokenAddr;
         emit NewTokenAddress(tokenAddr);
     }
-
-    /*
-    function getCheapHouseIds(uint256 _maxCost) public view returns(uint256[] memory) {
-       
-    }*/
 }

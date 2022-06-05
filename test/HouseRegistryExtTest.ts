@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ethers } from 'hardhat';
+import { ethers, upgrades } from 'hardhat';
 
 describe('House Registry Ext:', () => {
 	let houseRegistryExt: any;
@@ -14,8 +14,9 @@ describe('House Registry Ext:', () => {
   		[accountOne, accountTwo, accountThree] = await ethers.getSigners();
   		//contract of House Registry
   		const HouseRegistryExt = await ethers.getContractFactory('HouseRegistryExt', accountOne);
-  		houseRegistryExt = await HouseRegistryExt.deploy();
+  		houseRegistryExt = await upgrades.deployProxy(HouseRegistryExt);
   		await houseRegistryExt.deployed();
+  		//await houseRegistryExt.initialize();
   		//contract of tokens DAI
   		const TokenDAI = await ethers.getContractFactory('Token', accountOne);
   		tokenDAI = await TokenDAI.deploy(totalBalance);
@@ -67,6 +68,6 @@ describe('House Registry Ext:', () => {
 
   	it('Should be: Buying a house for DAI', async ()=> {
   		const tokenFunct = await tokenDAI.connect(accountOne).approve(houseRegistryExt.address, totalBalance);
-  		const tx = await houseRegistryExt.connect(accountOne).buyNFTHouseWithDAI(houseId)
+  		const tx = await houseRegistryExt.connect(accountOne).buyNFTHouseWithDAI(houseId);
   	});
 });
