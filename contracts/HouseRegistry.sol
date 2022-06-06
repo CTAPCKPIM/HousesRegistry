@@ -5,7 +5,7 @@ pragma solidity ^0.8.1;
 ///@author by CTAPCKPIM
 ///@title Registry of houses
 import './token/HouseNFT.sol';
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 contract HouseRegistry is Initializable {
     ///@dev to display in an outer functions
@@ -29,9 +29,8 @@ contract HouseRegistry is Initializable {
         owner = msg.sender;
         idNumber = 99999;
         readiness = 1 days;
-
     }
-    
+
     modifier onlyOwner() {
         require(msg.sender == owner, 'You no the owner');
         _;
@@ -45,7 +44,7 @@ contract HouseRegistry is Initializable {
     mapping(uint256 => address) public addressHouseToken;
 
     ///@dev mapping to save time of recharge
-    mapping(address => uint256) internal timerRecharge;
+    mapping(address => uint256) public timerRecharge;
 
     ///@param 'randId' creates a new ID for the house
     ///@dev function for create new NFT house (token-contract)
@@ -88,7 +87,7 @@ contract HouseRegistry is Initializable {
     }
 
     ///@dev setting not activity house in register
-    function delistHouse(uint256 _idHouse) public onlyOwner returns(string memory) {
+    function delistHouse(uint256 _idHouse) public onlyOwner returns (string memory) {
         HouseNFT(addressHouseToken[_idHouse]).setBool();
         string memory message = 'Successfully';
         emit DelistHouse(message);

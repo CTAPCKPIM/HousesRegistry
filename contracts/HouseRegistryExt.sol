@@ -4,12 +4,11 @@ pragma solidity ^0.8.1;
 
 import './HouseRegistry.sol';
 import './token/IHouseNFT.sol';
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 
 ///@author by CTAPCKPIM
 ///@title Simple registry of houses
 contract HouseRegistryExt is HouseRegistry {
-
     ///@dev if 24 hours is out
     modifier recharge() {
         require(timerRecharge[msg.sender] <= block.timestamp, 'After 24 hours');
