@@ -1,29 +1,30 @@
 import { expect } from 'chai';
 import { ethers, upgrades } from 'hardhat';
 
-describe('House Registry Ext Ver2:', () => {
+describe('House Registry Ext Version(2):', () => {
   let houseRegistryExtVer2: any;
   let tokenDAI: any;
   let accOne: any;
   let accTwo: any;
   let accThree: any;
+  let accFour: any;
   const totalBalance: any = 100000;
   let houseId: any;
 
   beforeEach(async () => {
-    [accOne, accTwo, accThree] = await ethers.getSigners();
+    [accOne, accTwo, accThree, accFour] = await ethers.getSigners();
     // contract of House Registry
-    //const HouseRegistryExtV2 = await ethers.getContractFactory('HouseRegistryExtVer2', accOne);
-    //houseRegistryExtVer2 = await upgrades.deployProxy(HouseRegistryExtV2);
-    //await houseRegistryExtVer2.deployed();
+    const HouseRegistryExtV2 = await ethers.getContractFactory('HouseRegistryExtVer2', accOne);
+    houseRegistryExtVer2 = await upgrades.deployProxy(HouseRegistryExtV2);
+    await houseRegistryExtVer2.deployed();
     // contract of tokens DAI
     const TokenDAI = await ethers.getContractFactory('Token', accOne);
     tokenDAI = await TokenDAI.deploy(totalBalance);
     await tokenDAI.deployed();
-    //await houseRegistryExtVer2.setAddrToken(tokenDAI.address);
-    //const funct = await houseRegistryExtVer2.connect(accTwo).listHouseSimple(1, 1, 1, '1');
-    //const data = await funct.wait();
-    //houseId = await data.events[0].args[0];
+    await houseRegistryExtVer2.setAddrToken(tokenDAI.address);
+    const funct = await houseRegistryExtVer2.connect(accTwo).listHouseSimple(1, 1, 1, '1');
+    const data = await funct.wait();
+    houseId = await data.events[0].args[0];
   });
 
   it('Should be deployed: HouseRegistryExtVer2/Token', async () => {
@@ -40,7 +41,7 @@ describe('House Registry Ext Ver2:', () => {
     ).to.be.revertedWith(message);
   });
 
-  it('Should be creating a new house(Ext)', async () => {
+  it('Should be creating a new house(ExtVer2)', async () => {
     const funct = await houseRegistryExtVer2.connect(accThree).listHouseSimple(3, 3, 3, '3');
     const data = await funct.wait();
     expect(data.events[0].args[0]).to.eq(31878);
@@ -74,35 +75,30 @@ describe('House Registry Ext Ver2:', () => {
     await houseRegistryExtVer2.connect(accOne).buyNFTHouseWithDAI(houseId);
   });
 
-
-
-
-
-
-
-
-
-  it.only('Should: make a contract update', async ()=> {
-  	//№1
-  	const HouseRegistryExt = await ethers.getContractFactory('HouseRegistryExt');
-  	let beacon = await upgrades.deployBeacon(HouseRegistryExt);
-  	let houseRegistryExt = await upgrades.deployBeaconProxy(beacon, HouseRegistryExt);
-  	await houseRegistryExt.deployed();
-  	//№2
-  	const funct = await houseRegistryExt.connect(accThree).
-  		listHouseSimple(3, 3, 3, '3');
-    const data = await funct.wait();
-    const id = await data.events[0].args[0];
-    //expect(id).to.eq(31878);
-    //№3
+  it('Should: make a contract update', async () => {
+    // Create a smart contract
+    const HouseRegistryExt = await ethers.getContractFactory('HouseRegistryExt');
+    const beacon = await upgrades.deployBeacon(HouseRegistryExt);
+    const houseRegistryExt = await upgrades.deployBeaconProxy(beacon, HouseRegistryExt);
+    await houseRegistryExt.deployed();
+    // Upgrade a 'First' SC to the 'Second' SC version 2
     const HouseRegistryExtTwo = await ethers.getContractFactory('HouseRegistryExtVer2');
     let houseRegistryExtTwo = await upgrades.upgradeBeacon(beacon, HouseRegistryExtTwo);
     houseRegistryExtTwo = HouseRegistryExtTwo.attach(houseRegistryExt.address);
     await houseRegistryExtTwo.deployed();
-    //№4
-   	let result = await houseRegistryExtTwo.getExpensiveHouseIds();
-   	console.log(result);
-    //№5
-    //expect(result).to.eq(id);
+    // Create houses
+    await houseRegistryExtTwo.connect(accThree).listHouseSimple(4, 4, 4, '4');
+    await houseRegistryExtTwo.connect(accOne).listHouseSimple(1, 1, 1, '1');
+    const funct = await houseRegistryExt.connect(accFour).listHouseSimple(5, 5, 5, '5');
+    const data = await funct.wait();
+    const id = await data.events[0].args[0];
+    // Call a function 'getExpensiveHouseIds()'
+    const result = await houseRegistryExtTwo.getExpensiveHouseIds();
+    // Compare house ID with ID house from 'listHouseSimple'
+    expect(result).to.eq(id);
+    // Comparing address houses
+    expect(await houseRegistryExt.addressHouseToken(id)).to.eq(
+      await houseRegistryExtTwo.addressHouseToken(id)
+    );
   });
 });

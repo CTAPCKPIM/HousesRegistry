@@ -41,7 +41,6 @@ contract HouseRegistryExtVer2 is HouseRegistry {
     ///@dev using an interface for token 'FakeDAI'
     function buyNFTHouseWithDAI(uint256 _idHouse) public payable {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
-        require(tokenAddr != address(0), 'Token address not set');
         IERC20Upgradeable(tokenAddr).transferFrom(
             msg.sender,
             HouseNFT(addressHouseToken[_idHouse]).seller(),
@@ -52,13 +51,13 @@ contract HouseRegistryExtVer2 is HouseRegistry {
 
     ///@dev returns the ID of the most expensive house
     function getExpensiveHouseIds() public view returns (uint256) {
+        uint256 randId;
         uint256 count = 0;
         uint256 expensive = 0;
-        uint256 randId;
-        for (uint256 i = 0; i <= houseIndex.length; i++) {
+        for (uint256 i = 0; i < houseIndex.length; i++) {
             if (HouseNFT(addressHouseToken[houseIndex[i]]).costDAI() >= expensive) {
-                expensive = HouseNFT(addressHouseToken[houseIndex[i]]).costDAI();
                 randId = HouseNFT(addressHouseToken[houseIndex[i]]).idHouse();
+                expensive = HouseNFT(addressHouseToken[houseIndex[i]]).costDAI();
                 count++;
             }
             count++;
