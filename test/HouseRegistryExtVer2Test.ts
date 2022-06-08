@@ -81,17 +81,18 @@ describe('House Registry Ext Version(2):', () => {
     const beacon = await upgrades.deployBeacon(HouseRegistryExt);
     const houseRegistryExt = await upgrades.deployBeaconProxy(beacon, HouseRegistryExt);
     await houseRegistryExt.deployed();
+    // Create house(Ext)
+    const funct = await houseRegistryExt.connect(accFour).listHouseSimple(5, 5, 5, '5');
+    const data = await funct.wait();
+    const id = await data.events[0].args[0];
     // Upgrade a 'First' SC to the 'Second' SC version 2
     const HouseRegistryExtTwo = await ethers.getContractFactory('HouseRegistryExtVer2');
     let houseRegistryExtTwo = await upgrades.upgradeBeacon(beacon, HouseRegistryExtTwo);
     houseRegistryExtTwo = HouseRegistryExtTwo.attach(houseRegistryExt.address);
     await houseRegistryExtTwo.deployed();
-    // Create houses
+    // Create house(ExtVre2)
     await houseRegistryExtTwo.connect(accThree).listHouseSimple(4, 4, 4, '4');
     await houseRegistryExtTwo.connect(accOne).listHouseSimple(1, 1, 1, '1');
-    const funct = await houseRegistryExt.connect(accFour).listHouseSimple(5, 5, 5, '5');
-    const data = await funct.wait();
-    const id = await data.events[0].args[0];
     // Call a function 'getExpensiveHouseIds()'
     const result = await houseRegistryExtTwo.getExpensiveHouseIds();
     // Compare house ID with ID house from 'listHouseSimple'
