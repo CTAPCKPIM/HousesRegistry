@@ -8,7 +8,7 @@ import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 
 ///@author by CTAPCKPIM
 ///@title Simple registry of houses
-contract HouseRegistryExt is HouseRegistry {
+contract HouseRegistryExtVer2 is HouseRegistry {
     ///@dev if 24 hours is out
     modifier recharge() {
         require(timerRecharge[msg.sender] <= block.timestamp, 'After 24 hours');
@@ -47,5 +47,21 @@ contract HouseRegistryExt is HouseRegistry {
             HouseNFT(addressHouseToken[_idHouse]).costDAI()
         );
         HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
+    }
+
+    ///@dev returns the ID of the most expensive house
+    function getExpensiveHouseIds() public view returns (uint256) {
+        uint256 randId;
+        uint256 count = 0;
+        uint256 expensive = 0;
+        for (uint256 i = 0; i < houseIndex.length; i++) {
+            if (HouseNFT(addressHouseToken[houseIndex[i]]).costDAI() >= expensive) {
+                randId = HouseNFT(addressHouseToken[houseIndex[i]]).idHouse();
+                expensive = HouseNFT(addressHouseToken[houseIndex[i]]).costDAI();
+                count++;
+            }
+            count++;
+        }
+        return randId;
     }
 }

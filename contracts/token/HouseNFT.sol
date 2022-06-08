@@ -11,14 +11,14 @@ import './IHouseNFT.sol';
 ///@dev inherit from ERC721 smart contract
 contract HouseNFT is IHouseNFT, ERC721 {
     ///@dev information about House-token
-    uint256 internal idHouse;
-    uint256 internal costETH;
-    uint256 internal costDAI;
-    uint256 internal squareHouse;
-    address internal seller;
-    address internal buyer;
-    string internal addressHouse;
-    bool internal exist;
+    uint256 public idHouse;
+    uint256 public costETH;
+    uint256 public costDAI;
+    uint256 public squareHouse;
+    address public seller;
+    address public buyer;
+    string public addressHouse;
+    bool public exist;
 
     constructor(
         uint256 randId,
@@ -38,34 +38,9 @@ contract HouseNFT is IHouseNFT, ERC721 {
         exist = true;
     }
 
-    ///@dev getting the ID of house
-    function getId() external view override returns (uint256) {
-        return idHouse;
-    }
-
-    ///@dev get the price in ETH
-    function getCostETH() external view override returns (uint256) {
-        return costETH;
-    }
-
-    ///@dev get the price in DAI
-    function getCostDAI() external view override returns (uint256) {
-        return costDAI;
-    }
-
-    ///@dev get the address of seller
-    function getSeller() external view override returns (address) {
-        return seller;
-    }
-
     ///@dev setting the address of buyer
     function setBuyer(address _buyer) external override {
         buyer = _buyer;
-    }
-
-    ///@dev setting the address of buyer
-    function setSeller(address _seller) external override {
-        seller = _seller;
     }
 
     ///@dev setting the value 'false' for turning off the house from the register

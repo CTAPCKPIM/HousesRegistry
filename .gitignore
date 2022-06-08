@@ -3,7 +3,9 @@ node_modules
 coverage
 coverage.json
 typechain
+typechain-types
 dist
+
 
 #Hardhat files
 cache
@@ -16,3 +18,6 @@ typechain-types
 # Code editors
 *.code-workspace
 !Linters.code-workspace
+
+# OpenZeppelin
+.openzeppelin/unknown-*.json
