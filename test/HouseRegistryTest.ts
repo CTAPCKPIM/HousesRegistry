@@ -3,6 +3,7 @@ import { ethers, upgrades } from 'hardhat';
 
 describe('House Registry:', () => {
   let houseRegistry: any;
+  let houseFact: any;
   let accountOne: any;
   let accountTwo: any;
   let accountThree: any;
@@ -13,6 +14,12 @@ describe('House Registry:', () => {
     const HouseRegistry = await ethers.getContractFactory('HouseRegistry', accountOne);
     houseRegistry = await upgrades.deployProxy(HouseRegistry);
     await houseRegistry.deployed();
+    // deploy 'HouseFactory'
+    const HouseFact = await ethers.getContractFactory('HouseFactory', accountOne);
+    houseFact = await HouseFact.deploy();
+    await houseFact.deployed();
+    // adding an address of the House factory
+    await houseRegistry.setAddrFact(houseFact.address);
     // creating ready a house
     const funct = await houseRegistry.listHouse(122, 122, 122, accountTwo.address, '122');
     const data = await funct.wait();
@@ -21,6 +28,12 @@ describe('House Registry:', () => {
 
   it('Should be deployed', async () => {
     await expect(houseRegistry.address).to.be.properAddress;
+  });
+
+  it('Should be set the address of the factory', async () => {
+    const funct = await houseRegistry.setAddrFact(houseFact.address);
+    const data = await funct.wait();
+    expect(data.events[0].args[0]).to.eq(houseFact.address);
   });
 
   it('Should be set the address of the token', async () => {

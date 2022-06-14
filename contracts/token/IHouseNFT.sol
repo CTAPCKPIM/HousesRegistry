@@ -14,4 +14,16 @@ interface IHouseNFT is IERC721 {
 
     ///@dev setting the value 'false' for turning off the house from the register
     function setBool() external;
+
+    ///@dev cost a token in ETH
+    function getCostETH() external view returns (uint256);
+
+    ///@dev cost a token in DAI
+    function getCostDAI() external view returns (uint256);
+
+    ///@dev ID of token
+    function getId() external view returns (uint256);
+
+    ///@dev returns a seller
+    function getSeller() external view returns (address);
 }

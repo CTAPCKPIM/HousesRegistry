@@ -47,4 +47,24 @@ contract HouseNFT is IHouseNFT, ERC721 {
     function setBool() external override {
         exist = false;
     }
+
+    ///@dev cost a token in ETH
+    function getCostETH() external view override returns (uint256) {
+        return costETH;
+    }
+
+    ///@dev cost a token in DAI
+    function getCostDAI() external view override returns (uint256) {
+        return costDAI;
+    }
+
+    ///@dev ID of token
+    function getId() external view override returns (uint256) {
+        return idHouse;
+    }
+
+    ///@dev returns a seller
+    function getSeller() external view override returns (address) {
+        return seller;
+    }
 }

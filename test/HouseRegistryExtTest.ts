@@ -3,6 +3,7 @@ import { ethers, upgrades } from 'hardhat';
 
 describe('House Registry Ext:', () => {
   let houseRegistryExt: any;
+  let houseFact: any;
   let tokenDAI: any;
   let accountOne: any;
   let accountTwo: any;
@@ -16,6 +17,12 @@ describe('House Registry Ext:', () => {
     const HouseRegistryExt = await ethers.getContractFactory('HouseRegistryExt', accountOne);
     houseRegistryExt = await upgrades.deployProxy(HouseRegistryExt);
     await houseRegistryExt.deployed();
+    // deploy 'HouseFactory'
+    const HouseFact = await ethers.getContractFactory('HouseFactory', accountOne);
+    houseFact = await HouseFact.deploy();
+    await houseFact.deployed();
+    // adding an address of the House factory
+    await houseRegistryExt.setAddrFact(houseFact.address);
     // contract of tokens DAI
     const TokenDAI = await ethers.getContractFactory('Token', accountOne);
     tokenDAI = await TokenDAI.deploy(totalBalance);

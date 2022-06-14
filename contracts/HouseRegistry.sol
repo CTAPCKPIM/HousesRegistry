@@ -4,7 +4,8 @@ pragma solidity ^0.8.1;
 
 ///@author by CTAPCKPIM
 ///@title Registry of houses
-import './token/HouseNFT.sol';
+import './token/IHouseNFT.sol';
+import './IHouseFactory.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 contract HouseRegistry is Initializable {
@@ -12,6 +13,8 @@ contract HouseRegistry is Initializable {
     event NewHouse(uint256 id, address seller, uint256 costETH, uint256 costDAI, string addrHouse);
     ///@dev to display in an outer functions
     event NewTokenAddress(address addr);
+    ///@dev to display in an outer functions
+    event NewFactAddress(address addr);
     ///@dev to display in an outer functions
     event DelistHouse(string message);
 
@@ -21,6 +24,8 @@ contract HouseRegistry is Initializable {
     uint256 internal readiness;
     ///@dev setting the address of token contract
     address internal tokenAddr;
+    ///@dev setting the address of factory contract
+    address internal factAddr;
     ///@dev the address of owner
     address internal owner;
 
@@ -49,7 +54,7 @@ contract HouseRegistry is Initializable {
     ///@param 'randId' creates a new ID for the house
     ///@dev function for create new NFT house (token-contract)
     ///@dev return to the external interface 'ID' 'seller' 'price' 'addr house(street)'
-    ///@dev return ID
+    ///@dev return ID     IHouseNFT houseNFT =
     function listHouse(
         uint256 _costETH,
         uint256 _costDAI,
@@ -60,7 +65,7 @@ contract HouseRegistry is Initializable {
         require(_costETH > 0 || _squareHouse > 0, 'Price, square not can bee "0"');
         uint256 randId = _genIdHouse(_squareHouse, _seller, _addressHouse);
         require(addressHouseToken[randId] == address(0), 'This ID already exists');
-        HouseNFT houseNFT = new HouseNFT(
+        IHouseFactory(factAddr).createHouse(
             randId,
             _costETH,
             _costDAI,
@@ -68,7 +73,7 @@ contract HouseRegistry is Initializable {
             _seller,
             _addressHouse
         );
-        addressHouseToken[randId] = address(houseNFT);
+        addressHouseToken[randId] = IHouseFactory(factAddr).getAddrToken();
         houseIndex.push(randId);
         emit NewHouse(randId, _seller, _costETH, _costDAI, _addressHouse);
         return randId;
@@ -88,7 +93,7 @@ contract HouseRegistry is Initializable {
 
     ///@dev setting not activity house in register
     function delistHouse(uint256 _idHouse) public onlyOwner returns (string memory) {
-        HouseNFT(addressHouseToken[_idHouse]).setBool();
+        IHouseNFT(addressHouseToken[_idHouse]).setBool();
         string memory message = 'Successfully';
         emit DelistHouse(message);
         return message;
@@ -98,5 +103,11 @@ contract HouseRegistry is Initializable {
     function setAddrToken(address _tokenAddr) public onlyOwner {
         tokenAddr = _tokenAddr;
         emit NewTokenAddress(tokenAddr);
+    }
+
+    ///@dev setting the address of factory
+    function setAddrFact(address _factAddr) public onlyOwner {
+        factAddr = _factAddr;
+        emit NewFactAddress(factAddr);
     }
 }

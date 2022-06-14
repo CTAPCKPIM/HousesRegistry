@@ -3,6 +3,7 @@ import { ethers, upgrades } from 'hardhat';
 
 describe('House Registry Ext Version(2):', () => {
   let houseRegistryExtVer2: any;
+  let houseFact: any;
   let tokenDAI: any;
   let accOne: any;
   let accTwo: any;
@@ -17,6 +18,12 @@ describe('House Registry Ext Version(2):', () => {
     const HouseRegistryExtV2 = await ethers.getContractFactory('HouseRegistryExtVer2', accOne);
     houseRegistryExtVer2 = await upgrades.deployProxy(HouseRegistryExtV2);
     await houseRegistryExtVer2.deployed();
+    // deploy 'HouseFactory'
+    const HouseFact = await ethers.getContractFactory('HouseFactory', accOne);
+    houseFact = await HouseFact.deploy();
+    await houseFact.deployed();
+    // adding an address of the House factory
+    await houseRegistryExtVer2.setAddrFact(houseFact.address);
     // contract of tokens DAI
     const TokenDAI = await ethers.getContractFactory('Token', accOne);
     tokenDAI = await TokenDAI.deploy(totalBalance);
@@ -81,6 +88,12 @@ describe('House Registry Ext Version(2):', () => {
     const beacon = await upgrades.deployBeacon(HouseRegistryExt);
     const houseRegistryExt = await upgrades.deployBeaconProxy(beacon, HouseRegistryExt);
     await houseRegistryExt.deployed();
+    // deploy 'HouseFactory'
+    const Factory = await ethers.getContractFactory('HouseFactory', accOne);
+    const factory = await Factory.deploy();
+    await factory.deployed();
+    // adding an address of the House factory
+    await houseRegistryExt.setAddrFact(factory.address);
     // Create house(Ext)
     const funct = await houseRegistryExt.connect(accFour).listHouseSimple(5, 5, 5, '5');
     const data = await funct.wait();

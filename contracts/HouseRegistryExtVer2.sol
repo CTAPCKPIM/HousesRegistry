@@ -3,7 +3,6 @@
 pragma solidity ^0.8.1;
 
 import './HouseRegistry.sol';
-import './token/IHouseNFT.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 
 ///@author by CTAPCKPIM
@@ -31,10 +30,10 @@ contract HouseRegistryExtVer2 is HouseRegistry {
     ///@dev this function accepts ETH to buy a NFT house, and transferred ETH to the seller
     function buyNFTHouseWithETH(uint256 _idHouse) public payable {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
-        payable(HouseNFT(addressHouseToken[_idHouse]).seller()).transfer(
-            HouseNFT(addressHouseToken[_idHouse]).costETH()
+        payable(IHouseNFT(addressHouseToken[_idHouse]).getSeller()).transfer(
+            IHouseNFT(addressHouseToken[_idHouse]).getCostETH()
         );
-        HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
+        IHouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 
     ///@dev this function accepts DAI to buy a house, and transferred DAI to the seller
@@ -43,10 +42,10 @@ contract HouseRegistryExtVer2 is HouseRegistry {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
         IERC20Upgradeable(tokenAddr).transferFrom(
             msg.sender,
-            HouseNFT(addressHouseToken[_idHouse]).seller(),
-            HouseNFT(addressHouseToken[_idHouse]).costDAI()
+            IHouseNFT(addressHouseToken[_idHouse]).getSeller(),
+            IHouseNFT(addressHouseToken[_idHouse]).getCostDAI()
         );
-        HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
+        IHouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 
     ///@dev returns the ID of the most expensive house
@@ -55,9 +54,9 @@ contract HouseRegistryExtVer2 is HouseRegistry {
         uint256 count = 0;
         uint256 expensive = 0;
         for (uint256 i = 0; i < houseIndex.length; i++) {
-            if (HouseNFT(addressHouseToken[houseIndex[i]]).costDAI() >= expensive) {
-                randId = HouseNFT(addressHouseToken[houseIndex[i]]).idHouse();
-                expensive = HouseNFT(addressHouseToken[houseIndex[i]]).costDAI();
+            if (IHouseNFT(addressHouseToken[houseIndex[i]]).getCostDAI() >= expensive) {
+                randId = IHouseNFT(addressHouseToken[houseIndex[i]]).getId();
+                expensive = IHouseNFT(addressHouseToken[houseIndex[i]]).getCostDAI();
                 count++;
             }
             count++;

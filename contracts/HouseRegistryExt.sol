@@ -3,7 +3,6 @@
 pragma solidity ^0.8.1;
 
 import './HouseRegistry.sol';
-import './token/IHouseNFT.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
 
 ///@author by CTAPCKPIM
@@ -31,10 +30,10 @@ contract HouseRegistryExt is HouseRegistry {
     ///@dev this function accepts ETH to buy a NFT house, and transferred ETH to the seller
     function buyNFTHouseWithETH(uint256 _idHouse) public payable {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
-        payable(HouseNFT(addressHouseToken[_idHouse]).seller()).transfer(
-            HouseNFT(addressHouseToken[_idHouse]).costETH()
+        payable(IHouseNFT(addressHouseToken[_idHouse]).getSeller()).transfer(
+            IHouseNFT(addressHouseToken[_idHouse]).getCostETH()
         );
-        HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
+        IHouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 
     ///@dev this function accepts DAI to buy a house, and transferred DAI to the seller
@@ -43,9 +42,9 @@ contract HouseRegistryExt is HouseRegistry {
         require(addressHouseToken[_idHouse] != address(0), 'Does not exist');
         IERC20Upgradeable(tokenAddr).transferFrom(
             msg.sender,
-            HouseNFT(addressHouseToken[_idHouse]).seller(),
-            HouseNFT(addressHouseToken[_idHouse]).costDAI()
+            IHouseNFT(addressHouseToken[_idHouse]).getSeller(),
+            IHouseNFT(addressHouseToken[_idHouse]).getCostDAI()
         );
-        HouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
+        IHouseNFT(addressHouseToken[_idHouse]).setBuyer(msg.sender);
     }
 }
