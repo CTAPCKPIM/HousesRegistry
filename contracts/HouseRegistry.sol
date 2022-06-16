@@ -54,7 +54,7 @@ contract HouseRegistry is Initializable {
     ///@param 'randId' creates a new ID for the house
     ///@dev function for create new NFT house (token-contract)
     ///@dev return to the external interface 'ID' 'seller' 'price' 'addr house(street)'
-    ///@dev return ID     IHouseNFT houseNFT =
+    ///@dev return ID
     function listHouse(
         uint256 _costETH,
         uint256 _costDAI,
@@ -65,7 +65,7 @@ contract HouseRegistry is Initializable {
         require(_costETH > 0 || _squareHouse > 0, 'Price, square not can bee "0"');
         uint256 randId = _genIdHouse(_squareHouse, _seller, _addressHouse);
         require(addressHouseToken[randId] == address(0), 'This ID already exists');
-        IHouseFactory(factAddr).createHouse(
+        addressHouseToken[randId] = IHouseFactory(factAddr).createHouse(
             randId,
             _costETH,
             _costDAI,
@@ -73,7 +73,6 @@ contract HouseRegistry is Initializable {
             _seller,
             _addressHouse
         );
-        addressHouseToken[randId] = IHouseFactory(factAddr).getAddrToken();
         houseIndex.push(randId);
         emit NewHouse(randId, _seller, _costETH, _costDAI, _addressHouse);
         return randId;

@@ -14,8 +14,5 @@ interface IHouseFactory {
         uint256 _squareHouse,
         address _seller,
         string memory _addressHouse
-    ) external;
-
-    ///@dev return the address of token-contract
-    function getAddrToken() external view returns (address);
+    ) external returns (address);
 }

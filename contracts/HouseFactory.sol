@@ -8,9 +8,11 @@ import './token/HouseNFT.sol';
 import './IHouseFactory.sol';
 
 contract HouseFactory {
+    ///@dev the last address create for the token contract
     address public addrTokenHouse;
 
-    mapping (uint256 => address) public houses;
+    ///@dev the array of addresses of the token contracts
+    address[] public houses;
 
     ///@dev creating a house-token
     function createHouse(
@@ -20,7 +22,7 @@ contract HouseFactory {
         uint256 _squareHouse,
         address _seller,
         string memory _addressHouse
-    ) public {
+    ) public returns (address) {
         HouseNFT houseNFT = new HouseNFT(
             _idHouse,
             _costETH,
@@ -29,12 +31,8 @@ contract HouseFactory {
             _seller,
             _addressHouse
         );
+        houses.push(address(houseNFT));
         addrTokenHouse = address(houseNFT);
-        houses[_idHouse] = addrTokenHouse;
-    }
-
-    ///@dev return the address of token-contract
-    function getAddrToken() external view returns (address) {
         return addrTokenHouse;
     }
 }
