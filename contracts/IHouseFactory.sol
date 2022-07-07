@@ -2,11 +2,17 @@
 
 pragma solidity ^0.8.1;
 
-///@author by CTAPCKPIM
-///@title Registry of houses(IHouseFactory)
+/**
+ * @author by CTAPCKPIM
+ * @title Registry of houses(IHouseFactory)
+ */
 
 interface IHouseFactory {
-    ///@dev creating a house-token
+    /**
+     * @dev creating a house-token
+     * 
+     * - Interface passes values from 'HouseRegistryExtVer2.sol' to 'HouseFactory.sol'
+     */
     function createHouse(
         uint256 _idHouse,
         uint256 _costETH,

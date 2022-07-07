@@ -2,19 +2,30 @@
 
 pragma solidity ^0.8.1;
 
-///@author by CTAPCKPIM
-///@title Registry of houses(factory)
 import './token/HouseNFT.sol';
 import './IHouseFactory.sol';
 
+/**
+ * @author by CTAPCKPIM
+ * @title Registry of houses(factory)
+ */
 contract HouseFactory {
-    ///@dev the last address create for the token contract
+    /**
+     * @dev the last address create for the token contract
+     */
     address public addrTokenHouse;
 
-    ///@dev the array of addresses of the token contracts
+    /**
+     * @dev the array of addresses of the token contracts
+     */
     address[] public houses;
 
-    ///@dev creating a house-token
+    /**
+     * @dev creating a house-token
+     * 
+     * - Creating a new token-house (NFT)
+     * - The return address of token-house
+     */
     function createHouse(
         uint256 _idHouse,
         uint256 _costETH,
