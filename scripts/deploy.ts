@@ -1,30 +1,70 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-import { ethers } from 'hardhat';
+const hre = require('hardhat');
+const ethers = hre.ethers;
+const upgrades = hre.upgrades;
+const fs = require('fs');
+const path = require('path');
+
+//npx hardhat run --network localhost scripts/deploy.ts
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  const [deployer] = await ethers.getSigners();
 
-  // We get the contract to deploy
-  const Greeter = await ethers.getContractFactory('Greeter');
-  const greeter = await Greeter.deploy('Hello, Hardhat!');
+  /*deploy 'House Registry Ext Ver2' contract*/
+  const HouseRegistryExtVer2 = await ethers.getContractFactory('HouseRegistryExtVer2', deployer);
+  const houseRegistryExtVer2 = await upgrades.deployProxy(HouseRegistryExtVer2);
+  await houseRegistryExtVer2.deployed(); 
 
-  await greeter.deployed();
+  /*deploy 'House Factory' contract*/
+  const HouseFactory = await ethers.getContractFactory('HouseFactory', deployer);
+  const houseFactory = await HouseFactory.deploy();
+  await houseFactory.deployed();
 
-  console.log('Greeter deployed to:', greeter.address);
+  /*deploy 'fake DAI' contract*/
+  const Token = await ethers.getContractFactory('Token', deployer);
+  const token = await Token.deploy(1000000);
+  await token.deployed();
+
+  console.log('1) Address of owner: ', await deployer.getAddress());
+  console.log('2) HouseRegistryExtVer2 deployed to:', houseRegistryExtVer2.address);
+  console.log('3) HouseFactory deployed to:', houseFactory.address);
+  console.log('4) Fake DAI token deployed to:', token.address);
+
+  saveFrontEndFiles({
+    HouseRegistryExtVer2: houseRegistryExtVer2,
+    HouseFactory: houseFactory,
+    Token: token,
+  });
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+function saveFrontEndFiles(contracts: any) {
+  const contractsDir = path.join(__dirname, '/..', 'front/nextjs-blog/contracts');
+
+  if (!fs.existsSync(contractsDir)) {
+    fs.mkdirSync(contractsDir);
+  }
+
+  Object.entries(contracts).forEach((contract_item) => {
+    const [name, contract]: any = contract_item;
+
+    if (contract) {
+      fs.writeFileSync(
+        path.join(contractsDir, '/', name + 'Contract-address.json'),
+        JSON.stringify({ [name]: contract.address }, undefined, 2) //////////
+      );
+    }
+
+    const ContractArtifact = hre.artifacts.readArtifactSync(name);
+
+    fs.writeFileSync(
+      path.join(contractsDir, '/', name + '.json'),
+      JSON.stringify(ContractArtifact, null, 2)
+    );
+  });
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

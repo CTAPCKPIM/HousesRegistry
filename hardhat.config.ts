@@ -21,24 +21,19 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
   }
 });
 
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+const metemesk_private_key = '0xdf1a845c33fe4f3846d413556f0d10f655692c1612697c6917d2f75a90fbbb40';
+const etherscanAPIKey = 'UCQJTW1CE14Q7JW1G7UH1E6N638CIMTER1';
 
-const config: HardhatUserConfig = {
+module.exports = {
   solidity: '0.8.4',
+
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || '',
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/415f8a2aaccd47869329d565000d4686',
+      accounts: [metemesk_private_key],
     },
   },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: 'USD',
-  },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
-  },
+  etherscan : { 
+    apiKey : etherscanAPIKey, 
+  } 
 };
-
-export default config;

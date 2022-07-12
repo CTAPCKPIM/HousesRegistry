@@ -5,21 +5,32 @@ pragma solidity ^0.8.1;
 import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import './IHouseNFT.sol';
 
-///@author by CTAPCKPIM
-///@title token-contract 'House NFT'
+/**
+ * @author by CTAPCKPIM
+ * @title token-contract 'House NFT'
+ */
 
-///@dev inherit from ERC721 smart contract
+/**
+ * @dev inherit from ERC721 smart contract
+ */
 contract HouseNFT is IHouseNFT, ERC721 {
-    ///@dev information about House-token
-    uint256 public idHouse;
-    uint256 public costETH;
-    uint256 public costDAI;
+    /**
+     * @dev information about House-token
+     */
+    uint256 public override idHouse;
+    uint256 public override costETH;
+    uint256 public override costDAI;
     uint256 public squareHouse;
-    address public seller;
+    address public override seller;
     address public buyer;
     string public addressHouse;
     bool public exist;
 
+    /**
+     * @dev constructor setting all variables
+     * 
+     * - initializing fake DAI token
+     */
     constructor(
         uint256 randId,
         uint256 _costETH,
@@ -38,12 +49,16 @@ contract HouseNFT is IHouseNFT, ERC721 {
         exist = true;
     }
 
-    ///@dev setting the address of buyer
+    /**
+     * @dev setting the address of buyer
+     */
     function setBuyer(address _buyer) external override {
         buyer = _buyer;
     }
 
-    ///@dev setting the value 'false' for turning off the house from the register
+    /**
+     * @dev setting the value 'false' for turning off the house from the register
+     */
     function setBool() external override {
         exist = false;
     }
